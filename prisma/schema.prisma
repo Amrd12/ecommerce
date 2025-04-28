@@ -1,0 +1,84 @@
+generator client {
+  provider = "prisma-client-js"
+  //output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model account {
+  id       Int       @id @default(autoincrement())
+  email    String    @unique(map: "Account_email_key")
+  password String
+  role     String
+  admin    admin?
+  customer customer?
+}
+
+model admin {
+  id        Int     @id @default(autoincrement())
+  accountId Int     @unique(map: "Admin_accountId_key")
+  account   account @relation(fields: [accountId], references: [id], map: "Admin_accountId_fkey")
+}
+
+model cart {
+  id          Int           @id @default(autoincrement())
+  name        String
+  customerId  Int
+  status      String
+  customer    customer      @relation(fields: [customerId], references: [id], map: "Cart_customerId_fkey")
+  cartproduct cartproduct[]
+  order       order?
+
+  @@index([customerId], map: "Cart_customerId_fkey")
+}
+
+model cartproduct {
+  id        Int     @id @default(autoincrement())
+  cartId    Int
+  productId Int
+  cart      cart    @relation(fields: [cartId], references: [id], map: "CartProduct_cartId_fkey")
+  product   product @relation(fields: [productId], references: [id], map: "CartProduct_productId_fkey")
+
+  @@index([cartId], map: "CartProduct_cartId_fkey")
+  @@index([productId], map: "CartProduct_productId_fkey")
+}
+
+model customer {
+  id          Int     @id @default(autoincrement())
+  accountId   Int     @unique(map: "Customer_accountId_key")
+  name        String
+  phoneNumber String
+  cart        cart[]
+  account     account @relation(fields: [accountId], references: [id], map: "Customer_accountId_fkey")
+}
+
+model order {
+  id      Int    @id @default(autoincrement())
+  cartId  Int    @unique(map: "Order_cartId_key")
+  address String
+  payment String
+  cart    cart   @relation(fields: [cartId], references: [id], map: "Order_cartId_fkey")
+}
+
+model product {
+  id          Int           @id @default(autoincrement())
+  name        String
+  price       Float
+  description String
+  quantity    Int
+  cartproduct cartproduct[]
+  categoryId  Int?          // New field
+  category    category?     @relation(fields: [categoryId], references: [id])
+
+  @@index([categoryId])
+}
+
+model category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  products    product[] // One category can have many products
+}
