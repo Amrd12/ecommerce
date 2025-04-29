@@ -9,8 +9,11 @@ export const reigesterpage = async (req, res) => {
 };
 
 export const register = async (req, res) => {
+  if (req.session.user != undefined) {
+    res.redirect("/profile");
+    return;
+  }
   const { email, password, name, phoneNumber } = req.body;
-
   const hashedPassword = await bcrypt.hash(password, 10);
   const found = await prisma.account.findUnique({
     where: {
@@ -42,12 +45,19 @@ export const register = async (req, res) => {
 };
 
 export const loginpage = async (req, res) => {
+  if (req.session.user != undefined) {
+    res.redirect("/profile");
+    return;
+  }
   res.render("pages/auth/login");
 };
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-
+  if (req.session.user != undefined) {
+    res.redirect("/profile");
+    return;
+  }
   const account = await prisma.account.findUnique({
     where: { email },
     include: { customer: true },
