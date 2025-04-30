@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
   //output   = "./generated/prisma"
 }
 
@@ -13,6 +14,7 @@ model account {
   email    String    @unique(map: "Account_email_key")
   password String
   role     String
+  profileImage String? // New field for profile image
   admin    admin?
   customer customer?
 }
@@ -69,8 +71,9 @@ model product {
   price       Float
   description String
   quantity    Int
+  image       String       // New field for product image
   cartproduct cartproduct[]
-  categoryId  Int?          // New field
+  categoryId  Int?
   category    category?     @relation(fields: [categoryId], references: [id])
 
   @@index([categoryId])
@@ -80,5 +83,6 @@ model category {
   id          Int       @id @default(autoincrement())
   name        String    @unique
   description String?
+  image       String   // New field for category image
   products    product[] // One category can have many products
 }

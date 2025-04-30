@@ -35,21 +35,61 @@ async function main() {
   }
 }
 
+
 main();
 
-app.get("/", function (req, res) {
-  if (req.session.user == undefined) {
-    res.status(404).send({
-      status: "Error",
-    });
+
+app.get("/checkout", (req, res) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  const user = req.session.user;
+  const cart = req.session.cart || [];
+  res.render("pages/checkout", { user, cart });
+});
+app.get("/product/:id", async (req, res) => {
+  const product = await prisma.product.findUnique({
+    where: { id: parseInt(req.params.id) }
+  });
+
+  if (!product) return res.status(404).send("Product not found");
+
+  res.render("pages/product-detail", { product });
+});
+app.post("/cart/add", (req, res) => {
+  const { id, name, price } = req.body;
+  if (!req.session.cart) req.session.cart = [];
+  req.session.cart.push({ id, name, price });
+  res.sendStatus(200);
+});
+app.use((req, res, next) => {
+  if (!req.session.cart) req.session.cart = [];
+  res.locals.cart = req.session.cart;
+  next();
+});
+
+
+
+
+app.get("/", async function (req, res) {
+
+
+  const data = await prisma.product.findMany({ take: 10 });
+  const categories = await prisma.category.findMany({
+    take: 10,
+    include: {
+      products: true,
+    },
+  });
+
+
+  res.render("pages/index", {
+    product: data,
+    categories: categories,
+    user: req.session.user,
   }
 
-  res.send({
-    status: "true",
-  });
-  // res.render("pages/index", {
-  //   tagline: "awf",
-  // });
+  );
 });
 
 app.listen(3000, () => {
@@ -69,3 +109,4 @@ prisma.account.create({
     role: "",
   },
 });
+
