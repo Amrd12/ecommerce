@@ -14,7 +14,6 @@ model account {
   email    String    @unique(map: "Account_email_key")
   password String
   role     String
-  profileImage String? // New field for profile image
   admin    admin?
   customer customer?
 }
@@ -52,6 +51,7 @@ model customer {
   id          Int     @id @default(autoincrement())
   accountId   Int     @unique(map: "Customer_accountId_key")
   name        String
+  profileImage String? // New field for profile image
   phoneNumber String
   cart        cart[]
   account     account @relation(fields: [accountId], references: [id], map: "Customer_accountId_fkey")

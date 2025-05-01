@@ -5,13 +5,14 @@ import {
   login,
   loginpage,
   profile,
+  upload,
 } from "./controller.js";
 
 export const authRouter = express.Router();
 
 authRouter.get("/register", reigesterpage);
 
-authRouter.post("/register", register);
+authRouter.post("/register", upload.single("profileImage"), register);
 
 authRouter.get("/login", loginpage);
 
