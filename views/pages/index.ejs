@@ -25,8 +25,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
   <style>
     body {
-      background-image: url('/images/shopping-girl.jpg'); /* Background of a girl shopping */
-      background-size: cover;
+      background-image: url('/images/sales-event3.jpg'); 
+       /* Background of a girl shopping */
+       background-size: cover; 
       background-attachment: fixed;
       background-position: center;
     }
@@ -39,6 +40,35 @@
     }
     .category-scroll::-webkit-scrollbar {
       display: none; /* Hide the scrollbar */
+    }
+  </style>
+  <style>
+    #heroSlider {
+      height: 400px;
+      position: relative;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      min-width: 100%;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .bullet {
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    .bullet.active {
+      opacity: 1;
+      background-color: #007bff; /* Highlight active bullet */
     }
   </style>
 </head>
@@ -67,12 +97,27 @@
 </nav>
 
 <!-- Hero Section -->
-<section class="bg-cover bg-center py-16" style="background-image: url('/images/sales-event.jpg');">
-  <div class="container mx-auto px-4 text-center">
-    <a href="/sales" class="block">
-      <h1 class="text-4xl font-bold text-white mb-4">Big Sales Event!</h1>
-      <p class="text-lg text-white mb-6">Click here to explore products on sale!</p>
-    </a>
+<section class="relative bg-cover bg-center py-16">
+  <div id="heroSlider" class="relative overflow-hidden container mx-auto px-4">
+    <!-- Slides -->
+    <div class="slides">
+      <a href="/sales/event1" class="slide">
+        <img src="/images/sales-event1.jpg" alt="Sales Event 1" class="w-full h-full object-cover">
+      </a>
+      <a href="/sales/event2" class="slide">
+        <img src="/images/sales-event2.jpg" alt="Sales Event 2" class="w-full h-full object-cover">
+      </a>
+      <a href="/sales/event3" class="slide">
+        <img src="/images/sales-event3.jpg" alt="Sales Event 3" class="w-full h-full object-cover">
+      </a>
+    </div>
+
+    <!-- Bullets -->
+    <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+      <button class="bullet w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100" data-slide="0"></button>
+      <button class="bullet w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100" data-slide="1"></button>
+      <button class="bullet w-3 h-3 bg-white rounded-full opacity-50 hover:opacity-100" data-slide="2"></button>
+    </div>
   </div>
 </section>
 
@@ -80,10 +125,15 @@
 <main class="container mx-auto px-4 py-8">
   <% categories.forEach(category => { %>
     <section class="mb-10">
-      <div class="flex justify-between items-center mb-4">
+      <!-- Category Header -->
+      <div class="flex justify-between items-center mb-4 bg-navbar text-white px-4 py-2 rounded">
         <h2 class="text-2xl font-semibold"><%= category.name %></h2>
-        <a href="/category/<%= category.id %>" class="text-blue-600 hover:underline">View All</a>
+        <button onclick="window.location.href='/category/<%= category.id %>'" 
+                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          View All
+        </button>
       </div>
+      <!-- Products -->
       <div class="category-scroll">
         <% category.products.forEach(p => { %>
           <div class="min-w-[250px] bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transform transition overflow-hidden">
@@ -127,19 +177,35 @@
 
 <script>
   let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+  let isDrawerOpen = false;
 
   function toggleCart() {
     const cartDrawer = document.getElementById("cartDrawer");
     cartDrawer.classList.toggle("translate-x-full");
+    isDrawerOpen = !isDrawerOpen;
 
-    // Close cart when clicking outside
-    document.addEventListener("click", function handleOutsideClick(event) {
-      if (!cartDrawer.contains(event.target) && !event.target.closest("[onclick='toggleCart()']")) {
-        cartDrawer.classList.add("translate-x-full");
-        document.removeEventListener("click", handleOutsideClick);
-      }
-    });
+    if (isDrawerOpen) {
+      // Add event listener to detect clicks outside the drawer
+      document.addEventListener("click", handleOutsideClick);
+    } else {
+      // Remove the event listener when the drawer is closed
+      document.removeEventListener("click", handleOutsideClick);
+    }
   }
+
+  function handleOutsideClick(event) {
+    const cartDrawer = document.getElementById("cartDrawer");
+    if (!cartDrawer.contains(event.target) && !event.target.closest("[onclick='toggleCart()']")) {
+      cartDrawer.classList.add("translate-x-full");
+      isDrawerOpen = false;
+      document.removeEventListener("click", handleOutsideClick);
+    }
+  }
+
+  // Prevent clicks inside the drawer from closing it
+  document.getElementById("cartDrawer").addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
 
   function addToCart(id, name, price, image) {
     cart.push({ id, name, price, image });
@@ -196,6 +262,36 @@
       scrollContainer.scrollLeft += event.deltaY * 3; // Increase scroll speed by multiplying deltaY
     });
   });
+
+  const slides = document.querySelectorAll('.slide');
+  const bullets = document.querySelectorAll('.bullet');
+  let currentSlide = 0;
+
+  function showSlide(index) {
+    const slider = document.querySelector('.slides');
+    slider.style.transform = `translateX(-${index * 100}%)`;
+
+    // Update active bullet
+    bullets.forEach((bullet, i) => {
+      bullet.classList.toggle('active', i === index);
+    });
+
+    currentSlide = index;
+  }
+
+  // Auto-slide every 5 seconds
+  setInterval(() => {
+    const nextSlide = (currentSlide + 1) % slides.length;
+    showSlide(nextSlide);
+  }, 5000);
+
+  // Add click event to bullets
+  bullets.forEach((bullet, index) => {
+    bullet.addEventListener('click', () => showSlide(index));
+  });
+
+  // Initialize the first slide
+  showSlide(0);
 </script>
 </body>
 </html>
