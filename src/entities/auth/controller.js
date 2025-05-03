@@ -74,39 +74,23 @@ export const loginpage = async (req, res) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  if (req.session.user != undefined) {
-    res.redirect("/profile");
-    return;
-  }
-  const account = await prisma.account.findUnique({
+
+  const user = await prisma.account.findUnique({
     where: { email },
     include: { customer: true },
   });
 
-  if (!account) {
-    return res
-      .status(401)
-      .render("pages/auth/login", { error: "Invalid email or password." });
+  if (!user || !(await bcrypt.compare(password, user.password))) {
+    return res.render('pages/auth/login', { error: 'Invalid email or password' });
   }
 
-  const isPasswordValid = await bcrypt.compare(password, account.password);
-  if (!isPasswordValid) {
-    return res
-      .status(401)
-      .render("pages/auth/login", { error: "Invalid email or password." });
-  }
+  // Save user session
+  req.session.user = user.customer;
 
-  // Create a session for this user
-  req.session.user = {
-    data: await prisma.customer.findUnique({
-      where: {
-        accountId: account.id,
-      },
-    }),
-  };
-
-  // After login, redirect or render page
-  res.redirect("/profile");
+  // Redirect to the intended page or default to profile
+  const redirectTo = req.session.redirectTo || '/';
+  delete req.session.redirectTo; // Clear the redirectTo session variable
+  res.redirect(redirectTo);
 };
 
 export const profile = async (req, res) => {
@@ -116,5 +100,15 @@ export const profile = async (req, res) => {
   }
   res.render("pages/auth/user", {
     user: req.session.user,
+  });
+};
+
+export const logout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+      return res.redirect("/profile"); // Redirect to profile if logout fails
+    }
+    res.redirect("/login"); // Redirect to login after successful logout
   });
 };

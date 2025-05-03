@@ -68,7 +68,10 @@ app.use((req, res, next) => {
   res.locals.cart = req.session.cart;
   next();
 });
-
+app.use((req, res, next) => {
+  res.locals.user = req.session.user || null; // Pass user data to all views
+  next();
+});
 
 
 
