@@ -7,13 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+    color1= '#438cc3';
+    color2= '#a297de';
+    color3= '#8569cf';
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            navbar: '#1e293b',
-            footer: '#f8fafc',
-            drawerHeader: '#e2e8f0'
+            navbar: color2,
+            footer: color2,
+            drawerHeader: color2
           },
           transitionProperty: {
             'width': 'width'
@@ -23,14 +26,32 @@
     }
   </script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+  
   <style>
-    body {
-      /* background-image: url('/images/background 1.jpg');  */
-       background-color: #ffffff;
-       background-size: cover; 
-      background-attachment: fixed;
-      background-position: center;
+    :root {
+      --color1: #438cc3; /* Primary */
+      --color2: #a297de; /* Secondary */
+      --color3: #8569cf; /* Accent */
     }
+
+    body {
+      background-color: var(--color2); /* Secondary color for the background */
+      color: #ffff; /* Primary color for text */
+    }
+
+    .bg-navbar {
+      background-color: var(--color1); /* Primary color for navbar */
+    }
+
+    .bg-footer {
+      background-color: var(--color1); /* Primary color for footer */
+    }
+
+    .bg-drawerHeader {
+      background-color: var(--color2);
+      color: #ffff; /* Secondary color for drawer header */
+    }
+
     .category-scroll {
       display: flex;
       gap: 1rem;
@@ -38,10 +59,77 @@
       scroll-behavior: smooth; /* Smooth scrolling */
       padding-bottom: 1rem; /* Add some padding for better spacing */
     }
-    .category-scroll::-webkit-scrollbar {
+.category-scroll::-webkit-scrollbar {
       display: none; /* Hide the scrollbar */
     }
-  </style>
+
+
+
+  .text-blue-600 {
+    color: var(--color3) !important;
+  }
+
+  .hover\:bg-blue-700:hover {
+    background-color: var(--color3) !important;
+  }
+
+  .bg-blue-600 {
+    background-color: var(--color1) !important;
+  }
+
+  .hover\:bg-blue-700 {
+    background-color: var(--color2) !important;
+  }
+  .hover\:bg-blue-700:hover {
+    background-color: #ffff !important;
+    color: var(--color3) !important;
+  }
+
+  .bg-red-600 {
+    background-color: #e63946 !important;
+  }
+
+  .hover\:bg-red-700:hover {
+    background-color: #d62828 !important;
+  }
+
+  .bullet.active {
+    background-color: var(--color3); 
+  }
+
+  .bullet {
+    background-color: #ffffff; /* Default bullet color */
+  }
+
+  .hover\:underline:hover {
+    color: var(--color3);
+    text-decoration: underline;
+  }
+
+  input[type="text"] {
+    border: 1px solid var(--color3);
+  }
+
+  .rounded {
+    border-radius: 0.5rem;
+  }
+
+  .hover\:scale-105:hover {
+    background-color: var(--color3);
+  }
+
+  .group-hover\:inline {
+    color: #ffff;
+  }
+
+  .shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(67, 140, 195, 0.4), 0 4px 6px -2px rgba(67, 140, 195, 0.3);
+  }
+
+  .hover\:shadow-xl:hover {
+    box-shadow: 0 15px 25px -5px rgba(133, 105, 207, 0.5), 0 5px 10px -4px rgba(133, 105, 207, 0.4);
+  }
+</style>
   <style>
     #heroSlider {
       height: 400px;
@@ -68,7 +156,7 @@
 
     .bullet.active {
       opacity: 1;
-      background-color: #007bff; /* Highlight active bullet */
+      background-color:var(--color2) ; /* Highlight active bullet */
     }
   </style>
   <style>
@@ -343,3 +431,4 @@
 </body>
 </html>
 ``` 
+
