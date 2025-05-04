@@ -81,8 +81,8 @@
     background-color: var(--color2) !important;
   }
   .hover\:bg-blue-700:hover {
-    background-color: #ffff !important;
-    color: var(--color3) !important;
+    background-color: var(--color3) !important;
+    color: #fff !important;
   }
 
   .bg-red-600 {
@@ -134,11 +134,12 @@
     #heroSlider {
       height: 400px;
       position: relative;
-    }
+      border-radius: 1rem;    }
 
     .slides {
       display: flex;
       transition: transform 0.5s ease-in-out;
+      
     }
 
     .slide {
@@ -212,13 +213,13 @@
     <!-- Slides -->
     <div class="slides">
       <a href="/sales/event1" class="slide">
-        <img src="/images/sales-event1.jpg" alt="Sales Event 1" class="w-full h-full object-cover">
+        <img src="/images/sales-event1.jpg" alt="Sales Event 1" class="w-full h-full object-cover rounded-xl">
       </a>
       <a href="/sales/event2" class="slide">
         <img src="/images/sales-event2.jpg" alt="Sales Event 2" class="w-full h-full object-cover">
       </a>
       <a href="/sales/event3" class="slide">
-        <img src="/images/sales-event3.jpg" alt="Sales Event 3" class="w-full h-full object-cover">
+        <img src="/images/sales-event3.jpg" alt="Sales Event 1" class="w-full h-full object-cover rounded-xl">
       </a>
     </div>
 
@@ -428,7 +429,9 @@
     });
   });
 </script>
+
+<!-- Include Shared Scripts -->
+<%- include('../partials/scripts') %>
 </body>
 </html>
-``` 
 

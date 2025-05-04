@@ -1,0 +1,103 @@
+<nav class="bg-navbar text-white py-4 shadow sticky top-0 z-50">
+  <div class="container mx-auto px-4 flex justify-between items-center">
+    <!-- Logo -->
+    <a href="/" class="text-xl font-bold">YourStore</a>
+
+    <!-- Search Bar -->
+    <div class="flex-grow mx-4 relative flex justify-end">
+      <input type="text" placeholder="Search..." 
+             class="w-32 focus:w-full transition-all duration-500 bg-white text-black px-3 py-1 rounded" />
+    </div>
+
+    <!-- Right Section -->
+    <div class="flex items-center gap-4">
+      <!-- Cart Button -->
+      <button onclick="toggleCart()" class="group flex items-center gap-1">
+        <i class="bi bi-cart text-xl"></i>
+        <span class="hidden group-hover:inline transition">Cart</span>
+      </button>
+
+      <!-- User Dropdown -->
+      <div class="relative">
+        <% if (user) { %>
+          <!-- Logged-in User -->
+          <img src="<%= user.profileImage || '/images/default-avatar.png' %>" alt="Profile" 
+               class="w-10 h-10 rounded-full cursor-pointer navbar-profile" onclick="toggleDropdown('userDropdown')">
+          <div id="userDropdown" class="navbar-dropdown">
+            <a href="/profile">Profile</a>
+            <a href="/logout">Log Out</a>
+          </div>
+        <% } else { %>
+          <!-- Not Logged In -->
+          <i class="bi bi-person text-xl cursor-pointer navbar-profile" onclick="toggleDropdown('loginDropdown')"></i>
+          <div id="loginDropdown" class="navbar-dropdown">
+            <a href="/login">Log In</a>
+            <a href="/register">Sign Up</a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+.bg-navbar {
+  background-color: var(--color1); /* Primary color for navbar */
+}
+
+.navbar-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: white;
+  color: black;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.navbar-dropdown a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.navbar-dropdown a:hover {
+  background-color: var(--color2);
+  color: white;
+}
+
+.navbar-profile:hover + .navbar-dropdown,
+.navbar-dropdown:hover {
+  display: block;
+}
+</style>
+
+<script>
+function toggleDropdown(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  const isVisible = !dropdown.classList.contains('hidden');
+
+  // Hide all dropdowns
+  document.querySelectorAll('.absolute').forEach((menu) => {
+    menu.classList.add('hidden');
+  });
+
+  // Toggle the clicked dropdown
+  if (!isVisible) {
+    dropdown.classList.remove('hidden');
+  }
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (event) => {
+  const dropdowns = document.querySelectorAll('.absolute');
+  dropdowns.forEach((dropdown) => {
+    if (!dropdown.contains(event.target) && !event.target.closest('.cursor-pointer')) {
+      dropdown.classList.add('hidden');
+    }
+  });
+});
+</script>

@@ -1,0 +1,61 @@
+<script>
+  // Cart functionality
+  function addToCart(id, name, price, image) {
+    let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+    cart.push({ id, name, price, image });
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+    alert(`${name} has been added to your cart!`);
+  }
+
+  function updateCart() {
+    const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+    const totalEl = document.getElementById("cart-total");
+    const container = document.getElementById("cart-items");
+    container.innerHTML = '';
+    let total = 0;
+
+    cart.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.className = "flex items-center gap-3 justify-between border-b pb-2";
+      li.innerHTML = `
+        <div class="flex items-center gap-2">
+          <img src="${item.image || '/images/default.jpg'}" class="w-8 h-8 object-cover rounded" />
+          <div>
+            <p class="font-semibold">${item.name}</p>
+            <small class="text-gray-600">$${item.price.toFixed(2)}</small>
+          </div>
+        </div>
+        <button class="text-red-500" onclick="removeFromCart(${index})">&times;</button>
+      `;
+      container.appendChild(li);
+      total += item.price;
+    });
+
+    if (totalEl) totalEl.textContent = total.toFixed(2);
+  }
+
+  function removeFromCart(index) {
+    let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+    cart.splice(index, 1);
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+    updateCart();
+  }
+
+  function clearCart() {
+    sessionStorage.setItem("cart", JSON.stringify([]));
+    updateCart();
+  }
+
+  // Initialize cart on page load
+  document.addEventListener("DOMContentLoaded", () => {
+    updateCart();
+  });
+
+  // Enable horizontal scrolling for category scroll sections
+  document.querySelectorAll('.category-scroll').forEach((scrollContainer) => {
+    scrollContainer.addEventListener('wheel', (event) => {
+      event.preventDefault(); // Prevent vertical scrolling
+      scrollContainer.scrollLeft += event.deltaY * 3; // Increase scroll speed by multiplying deltaY
+    });
+  });
+</script>
