@@ -1,0 +1,10 @@
+<!-- Drawer Cart -->
+<div id="cartDrawer" class="fixed top-0 right-0 w-80 h-full bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-50 overflow-y-auto">
+  <div class="p-4 bg-drawerHeader text-center font-bold text-lg">Cart</div>
+  <ul id="cart-items" class="p-4 space-y-3"></ul>
+  <div class="p-4">
+    <p class="text-lg font-semibold mb-4">Total: $<span id="cart-total">0.00</span></p>
+    <button onclick="processCart()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 mb-2">Checkout</button>
+    <button onclick="clearCart()" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700">Clear Cart</button>
+  </div>
+</div>

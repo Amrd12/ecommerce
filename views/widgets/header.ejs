@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark E-commerce</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/@vuesax/icons@latest/dist/index.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">ShopDark</div>
+    <ul class="nav-tabs">
+      <li><a href="#">About</a></li>
+      <!-- Add more tabs here -->
+    </ul>
+    <input type="text" placeholder="Search..." class="search-bar" />
+    <% if (!user) { %>
+      <div class="auth-buttons">
+        <button>Login</button>
+        <button>Register</button>
+      </div>
+    <% } else { %>
+      <div class="nav-icons">
+        <i class="vuesax-outline-heart"></i>
+        <div class="dropdown">
+          <i class="vuesax-outline-profile"></i>
+          <div class="dropdown-menu">
+            <div class="profile-header">
+              <img src="<%= user.img %>" alt="User Image">
+              <span><%= user.name %></span>
+            </div>
+            <a href="#"><i class="vuesax-outline-clipboard"></i> Orders</a>
+            <a href="#"><i class="vuesax-outline-logout"></i> Logout</a>
+          </div>
+        </div>
+        <i class="vuesax-outline-shopping-cart"></i>
+      </div>
+    <% } %>
+  </nav>
+
+  <!-- Welcome Section with Categories -->
+  <section class="welcome">
+    <h1>Welcome to ShopDark</h1>
+    <div class="categories">
+      <% categories.forEach(cat => { %>
+        <div class="category-item" style="background-image: url('<%= cat.image %>');">
+          <div class="category-text">
+            <h2><%= cat.name %></h2>
+            <a href="/category/<%= cat.name %>">Explore More</a>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- New Arrivals -->
+  <section class="new-arrivals">
+    <h2>New Arrivals</h2>
+    <div class="product-scroll">
+      <% newArrivals.forEach(product => { %>
+        <div class="product-card">
+          <img src="<%= product.image %>" alt="">
+          <p><%= product.name %></p>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- Saving Section with Masonry Layout -->
+  <section class="savings">
+    <h2>Savings</h2>
+    <div class="masonry">
+      <% savings.forEach(item => { %>
+        <div class="masonry-item">
+          <img src="<%= item.image %>" alt="">
+          <p><%= item.name %></p>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- Men Section -->
+  <section class="men-section">
+    <h2>Men</h2>
+    <div class="category-grid">
+      <% menCategories.forEach(cat => { %>
+        <div class="category-item">
+          <img src="<%= cat.image %>" alt="">
+          <p><%= cat.name %></p>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- Women Section -->
+  <section class="women-section">
+    <h2>Women</h2>
+    <div class="category-grid">
+      <% womenCategories.forEach(cat => { %>
+        <div class="category-item">
+          <img src="<%= cat.image %>" alt="">
+          <p><%= cat.name %></p>
+        </div>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- Feedback Section -->
+  <section class="feedback">
+    <h2>Feedback</h2>
+    <% feedbacks.forEach(comment => { %>
+      <div class="feedback-item">
+        <p>"<%= comment.text %>"</p>
+        <span>⭐ <%= comment.rating %></span>
+      </div>
+    <% }); %>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#">Shipping</a></li>
+        <li><a href="#">Returns</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>About</h4>
+      <ul>
+        <li><a href="#">Company</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Location</h4>
+      <ul>
+        <li><a href="#">Find a store</a></li>
+        <li><a href="#">Map</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,148 @@
+/* Header container */
+.header {
+    position: absolute;
+    width: 1440px;
+    height: 108px;
+    left: 0;
+    top: 0;
+    border-bottom: 1px solid #BEBCBD;
+  }
+  
+  /* Inner wrapper */
+  .frame510 {
+    position: absolute;
+    width: 1237px;
+    height: 45px;
+    left: 102px;
+    top: 31px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  /* Logo */
+  .logo {
+    position: relative;
+    width: 91.16px;
+    height: 45px;
+    font-family: 'Mintaka', serif;
+    font-size: 34px;
+    font-weight: 400;
+    color: #3C4242;
+  }
+  
+  /* Navigation links */
+  .details {
+    display: flex;
+    gap: 40px;
+    position: relative;
+    top: 9px;
+  }
+  
+  .details a {
+    font-family: 'Causten', sans-serif;
+    font-size: 22px;
+    line-height: 26px;
+    color: #807D7E;
+    font-weight: 500;
+    text-decoration: none;
+  }
+  
+  .details a:first-child {
+    font-weight: 700;
+    color: #3C4242;
+  }
+  
+  /* Search bar */
+  .search-bar {
+    display: flex;
+    align-items: center;
+    background: #F6F6F6;
+    padding: 12px 20px;
+    border-radius: 8px;
+    width: 267px;
+    height: 44px;
+  }
+  
+  .search-bar input {
+    border: none;
+    background: transparent;
+    font-family: 'Causten', sans-serif;
+    font-size: 16px;
+    color: #807D7E;
+    width: 100%;
+    outline: none;
+  }
+  
+  /* Header icons */
+  .header-icons {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .icon {
+    width: 44px;
+    height: 44px;
+    background: #F6F6F6;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .icon i {
+    font-size: 20px;
+    color: #807D7E;
+  }
+  
+  /* Dropdown for user profile */
+  .dropdown {
+    position: relative;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 10px;
+    border-radius: 8px;
+    z-index: 100;
+    width: 180px;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown-content img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .dropdown-content p {
+    margin: 10px 0 5px;
+    font-family: 'Causten', sans-serif;
+    font-weight: bold;
+    color: #3C4242;
+  }
+  
+  .dropdown-content a {
+    text-decoration: none;
+    color: #807D7E;
+    font-size: 16px;
+  }
+  
+  /* Auth links (login/register) */
+  .auth-link {
+    font-family: 'Causten', sans-serif;
+    font-size: 16px;
+    color: #3C4242;
+    text-decoration: none;
+    padding: 10px 12px;
+  }
+  

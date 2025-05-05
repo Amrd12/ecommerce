@@ -1,19 +1,60 @@
+
 <script>
-  // Cart functionality
-  function addToCart(id, name, price, image) {
-    let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-    cart.push({ id, name, price, image });
+  let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+  let isDrawerOpen = false;
+
+  function toggleCart() {
+    const cartDrawer = document.getElementById("cartDrawer");
+    cartDrawer.classList.toggle("translate-x-full");
+    isDrawerOpen = !isDrawerOpen;
+
+    if (isDrawerOpen) {
+      // Add event listener to detect clicks outside the drawer
+      document.addEventListener("click", handleOutsideClick);
+    } else {
+      // Remove the event listener when the drawer is closed
+      document.removeEventListener("click", handleOutsideClick);
+    }
+  }
+
+  function handleOutsideClick(event) {
+    const cartDrawer = document.getElementById("cartDrawer");
+    if (!cartDrawer.contains(event.target) && !event.target.closest("[onclick='toggleCart()']")) {
+      cartDrawer.classList.add("translate-x-full");
+      isDrawerOpen = false;
+      document.removeEventListener("click", handleOutsideClick);
+    }
+  }
+
+  // Prevent clicks inside the drawer from closing it
+  document.getElementById("cartDrawer").addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  function addToCart(p) {
+    console.log(p);
+    cart.push(p);
     sessionStorage.setItem("cart", JSON.stringify(cart));
-    alert(`${name} has been added to your cart!`);
+    updateCart();
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+    updateCart();
+  }
+
+  function clearCart() {
+    cart = [];
+    sessionStorage.setItem("cart", JSON.stringify(cart));
+    updateCart();
   }
 
   function updateCart() {
-    const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-    const totalEl = document.getElementById("cart-total");
     const container = document.getElementById("cart-items");
+    const totalEl = document.getElementById("cart-total");
     container.innerHTML = '';
     let total = 0;
-
     cart.forEach((item, index) => {
       const li = document.createElement("li");
       li.className = "flex items-center gap-3 justify-between border-b pb-2";
@@ -22,7 +63,7 @@
           <img src="${item.image || '/images/default.jpg'}" class="w-8 h-8 object-cover rounded" />
           <div>
             <p class="font-semibold">${item.name}</p>
-            <small class="text-gray-600">$${item.price.toFixed(2)}</small>
+            <small class="text-gray-600">$${item.price}</small>
           </div>
         </div>
         <button class="text-red-500" onclick="removeFromCart(${index})">&times;</button>
@@ -30,32 +71,75 @@
       container.appendChild(li);
       total += item.price;
     });
-
-    if (totalEl) totalEl.textContent = total.toFixed(2);
+    totalEl.textContent = total.toFixed(2)
   }
 
-  function removeFromCart(index) {
-    let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-    cart.splice(index, 1);
-    sessionStorage.setItem("cart", JSON.stringify(cart));
-    updateCart();
+  function processCart() {
+    window.location.href = "/checkout";
   }
 
-  function clearCart() {
-    sessionStorage.setItem("cart", JSON.stringify([]));
-    updateCart();
-  }
+  updateCart();
 
-  // Initialize cart on page load
-  document.addEventListener("DOMContentLoaded", () => {
-    updateCart();
-  });
-
-  // Enable horizontal scrolling for category scroll sections
+  // Enable horizontal scrolling with the mouse wheel
   document.querySelectorAll('.category-scroll').forEach((scrollContainer) => {
     scrollContainer.addEventListener('wheel', (event) => {
       event.preventDefault(); // Prevent vertical scrolling
       scrollContainer.scrollLeft += event.deltaY * 3; // Increase scroll speed by multiplying deltaY
+    });
+  });
+
+  const slides = document.querySelectorAll('.slide');
+  const bullets = document.querySelectorAll('.bullet');
+  let currentSlide = 0;
+
+  function showSlide(index) {
+    const slider = document.querySelector('.slides');
+    slider.style.transform = `translateX(-${index * 100}%)`;
+
+    // Update active bullet
+    bullets.forEach((bullet, i) => {
+      bullet.classList.toggle('active', i === index);
+    });
+
+    currentSlide = index;
+  }
+
+  // Auto-slide every 5 seconds
+  setInterval(() => {
+    const nextSlide = (currentSlide + 1) % slides.length;
+    showSlide(nextSlide);
+  }, 5000);
+
+  // Add click event to bullets
+  bullets.forEach((bullet, index) => {
+    bullet.addEventListener('click', () => showSlide(index));
+  });
+
+  // Initialize the first slide
+  showSlide(0);
+
+  function toggleDropdown(dropdownId) {
+    const dropdown = document.getElementById(dropdownId);
+    const isVisible = !dropdown.classList.contains('hidden');
+
+    // Hide all dropdowns
+    document.querySelectorAll('.absolute').forEach((menu) => {
+      menu.classList.add('hidden');
+    });
+
+    // Toggle the clicked dropdown
+    if (!isVisible) {
+      dropdown.classList.remove('hidden');
+    }
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (event) => {
+    const dropdowns = document.querySelectorAll('.absolute');
+    dropdowns.forEach((dropdown) => {
+      if (!dropdown.contains(event.target) && !event.target.closest('.cursor-pointer')) {
+        dropdown.classList.add('hidden');
+      }
     });
   });
 </script>

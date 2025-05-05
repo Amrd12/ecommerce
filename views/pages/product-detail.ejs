@@ -42,7 +42,7 @@
     <p><strong>Quantity:</strong> <%= product.quantity %></p>
     <div class="d-flex justify-content-between mt-4">
       <a href="/" class="btn btn-secondary">Back</a>
-      <button onclick="addToCart('<%= product.id %>', '<%= product.name %>', <%= product.price %>, '<%= product.image %>')" class="btn btn-primary">Add to Cart</button>
+      <button onclick="addToCart(<%=JSON.stringify(product, null, 2)%>)" class="btn btn-primary">Add to Cart</button>
     </div>
   </div>
 </div>
@@ -53,6 +53,7 @@
     cart.push({ id, name, price, image });
     sessionStorage.setItem("cart", JSON.stringify(cart));
     alert(`${name} has been added to your cart!`);
+    updateCart();
   }
 </script>
 </body>

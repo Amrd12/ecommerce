@@ -1,0 +1,47 @@
+  body {
+    background-color: var(--color2);
+    color: #ffff;
+  }
+
+  .bg-navbar {
+    background-color: var(--color1);
+  }
+
+  .bg-footer {
+    background-color: var(--color1);
+  }
+
+  .btn-primary {
+    background-color: var(--color1);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color3);
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center !important;
+    gap: 10px;
+    padding: 20px 0;
+  }
+
+  .pagination .btn {
+    background-color: var(--color1);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+  }
+
+  .pagination .btn:hover {
+    background-color: var(--color3);
+  }
+
+  .pagination .btn.active {
+    background-color: var(--color3);
+    font-weight: bold;
+  }

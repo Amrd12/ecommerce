@@ -2,9 +2,7 @@ import { prisma } from "../../../index.js";
 import express from "express";
 import { UserTypeEnum } from "../../core/enums/role_enum.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import multer from "multer";
-import path from "path";
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({

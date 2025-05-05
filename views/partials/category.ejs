@@ -1,0 +1,28 @@
+
+<% categories.forEach(category => { %>
+  <section class="mb-10">
+    <!-- Category Header -->
+    <div class="flex justify-between items-center mb-4 bg-navbar text-white px-4 py-2 rounded">
+      <h2 class="text-2xl font-semibold"><%= category.name %></h2>
+      <button onclick="window.location.href='/category/<%= category.id %>'" 
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        View All
+      </button>
+    </div>
+    <!-- Products -->
+    <div class="category-scroll">
+      <% category.products.forEach(p => { %>
+        <div class="min-w-[250px] bg-white rounded-lg shadow-md hover:shadow-xl hover:scale-105 transform transition overflow-hidden">
+          <img src="<%= p.image || '/images/default.jpg' %>" class="w-full h-[200px] object-cover" alt="<%= p.name %>" />
+          <div class="p-3">
+            <h3 class="font-semibold text-lg"><%= p.name %></h3>
+            <p class="text-blue-600 font-medium">$<%= p.price.toFixed(2) %></p>
+            <button onclick="<%=  JSON.stringify(p, null, 2)%>" 
+                    class="mt-2 w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Add to Cart</button>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+    <hr class="my-6 border-gray-300" /> <!-- Horizontal line between categories -->
+  </section>
+<% }) %>

@@ -1,45 +1,3 @@
-<nav class="bg-navbar text-white py-4 shadow sticky top-0 z-50">
-  <div class="container mx-auto px-4 flex justify-between items-center">
-    <!-- Logo -->
-    <a href="/" class="text-xl font-bold">YourStore</a>
-
-    <!-- Search Bar -->
-    <div class="flex-grow mx-4 relative flex justify-end">
-      <input type="text" placeholder="Search..." 
-             class="w-32 focus:w-full transition-all duration-500 bg-white text-black px-3 py-1 rounded" />
-    </div>
-
-    <!-- Right Section -->
-    <div class="flex items-center gap-4">
-      <!-- Cart Button -->
-      <button onclick="toggleCart()" class="group flex items-center gap-1">
-        <i class="bi bi-cart text-xl"></i>
-        <span class="hidden group-hover:inline transition">Cart</span>
-      </button>
-
-      <!-- User Dropdown -->
-      <div class="relative">
-        <% if (user) { %>
-          <!-- Logged-in User -->
-          <img src="<%= user.profileImage || '/images/default-avatar.png' %>" alt="Profile" 
-               class="w-10 h-10 rounded-full cursor-pointer navbar-profile" onclick="toggleDropdown('userDropdown')">
-          <div id="userDropdown" class="navbar-dropdown">
-            <a href="/profile">Profile</a>
-            <a href="/logout">Log Out</a>
-          </div>
-        <% } else { %>
-          <!-- Not Logged In -->
-          <i class="bi bi-person text-xl cursor-pointer navbar-profile" onclick="toggleDropdown('loginDropdown')"></i>
-          <div id="loginDropdown" class="navbar-dropdown">
-            <a href="/login">Log In</a>
-            <a href="/register">Sign Up</a>
-          </div>
-        <% } %>
-      </div>
-    </div>
-  </div>
-</nav>
-
 <style>
 .bg-navbar {
   background-color: var(--color1); /* Primary color for navbar */
@@ -73,31 +31,48 @@
 .navbar-dropdown:hover {
   display: block;
 }
+
 </style>
+<!-- Navbar -->
+<nav class="bg-navbar text-white py-4 shadow sticky top-0 z-50">
+  <div class="container mx-auto px-4 flex justify-between items-center">
+    
+    <!-- Logo and Products Link with spacing -->
+    <div class="flex items-center gap-6">
+      <a href="/" class="text-xl font-bold">YourStore</a>
+      <a href="/products" class="text-white hover:text-blue-300 transition font-medium">Products</a>
+    </div>
 
-<script>
-function toggleDropdown(dropdownId) {
-  const dropdown = document.getElementById(dropdownId);
-  const isVisible = !dropdown.classList.contains('hidden');
+    <!-- Search -->
+    <div class="flex-grow mx-4 relative flex justify-end">
+      <input type="text" placeholder="Search..." onfocus="this.classList.add('w-full')"
+             onblur="this.classList.remove('w-full')"
+             class="w-32 focus:w-full transition-all duration-500 bg-white text-black px-3 py-1 rounded" />
+    </div>
 
-  // Hide all dropdowns
-  document.querySelectorAll('.absolute').forEach((menu) => {
-    menu.classList.add('hidden');
-  });
-
-  // Toggle the clicked dropdown
-  if (!isVisible) {
-    dropdown.classList.remove('hidden');
-  }
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', (event) => {
-  const dropdowns = document.querySelectorAll('.absolute');
-  dropdowns.forEach((dropdown) => {
-    if (!dropdown.contains(event.target) && !event.target.closest('.cursor-pointer')) {
-      dropdown.classList.add('hidden');
-    }
-  });
-});
-</script>
+    <div class="flex items-center gap-4">
+      <button onclick="toggleCart()" class="group flex items-center gap-1">
+        <i class="bi bi-cart text-xl"></i>
+        <span class="hidden group-hover:inline transition">Cart</span>
+      </button>
+      <div class="relative">
+        <% if (user) { %>
+          <!-- Logged-in User -->
+          <img src="<%= user.profileImage || '/images/default-avatar.png' %>" alt="Profile" 
+               class="w-10 h-10 rounded-full cursor-pointer" onclick="toggleDropdown('userDropdown')">
+          <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg hidden">
+            <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+            <a href="/logout" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Log Out</a>
+          </div>
+        <% } else { %>
+          <!-- Not Logged In -->
+          <i class="bi bi-person text-xl cursor-pointer" onclick="toggleDropdown('loginDropdown')"></i>
+          <div id="loginDropdown" class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg hidden">
+            <a href="/login" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Log In</a>
+            <a href="/register" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Sign Up</a>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

@@ -1,8 +1,13 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
 import { authRouter } from "./src/entities/auth/router.js";
+import productsRouter from "./src/entities/products/products.router.js";
+import cartRouter from "./src/entities/cart/cart.router.js";
+import categoriesRouter from "./src/entities/categories/categories.router.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
+import { rateLimit } from "express-rate-limit";
+
 export const prisma = new PrismaClient();
 
 const app = express();
@@ -10,6 +15,17 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static("public"));
+
+app.use(
+  rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+    standardHeaders: "draft-8", // draft-6: `RateLimit-*` headers; draft-7 & draft-8: combined `RateLimit` header
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers.
+    // store: ... , // Redis, Memcached, etc. See below.
+  })
+);
+
 
 app.use(
   session({
@@ -23,119 +39,15 @@ app.use(
     },
   })
 );
+
 app.set("view engine", "ejs");
+
+// Use routers
 app.use(authRouter);
-async function main() {
-  try {
-    const result = await prisma.$queryRaw`SELECT 1`;
-    console.log("✅ Connected to MySQL via Prisma:", result);
-  } catch (error) {
-    console.error("❌ Connection failed:", error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-
-
-main();
-
-
-app.get("/checkout", (req, res) => {
-  if (!req.session.user) {
-    return res.redirect("/login");
-  }
-  const user = req.session.user;
-  const cart = req.session.cart || [];
-  res.render("pages/checkout", { user, cart });
-});
-app.get("/product/:id", async (req, res) => {
-  const product = await prisma.product.findUnique({
-    where: { id: parseInt(req.params.id) }
-  });
-
-  if (!product) return res.status(404).send("Product not found");
-
-  res.render("pages/product-detail", { product });
-});
-app.post("/cart/add", (req, res) => {
-  const { id, name, price } = req.body;
-  if (!req.session.cart) req.session.cart = [];
-  req.session.cart.push({ id, name, price });
-  res.sendStatus(200);
-});
-app.use((req, res, next) => {
-  if (!req.session.cart) req.session.cart = [];
-  res.locals.cart = req.session.cart;
-  next();
-});
-app.use((req, res, next) => {
-  res.locals.user = req.session.user || null; // Pass user data to all views
-  next();
-});
-
-
-
-app.get("/", async function (req, res) {
-
-
-  const data = await prisma.product.findMany({ take: 10 });
-  const categories = await prisma.category.findMany({
-    take: 10,
-    include: {
-      products: true,
-    },
-  });
-
-
-  res.render("pages/index", {
-    product: data,
-    categories: categories,
-    user: req.session.user,
-  }
-
-  );
-});
-
-app.get("/category/:id", async (req, res) => {
-  try {
-    const categoryId = parseInt(req.params.id, 10); // Get the category ID from the URL
-    if (isNaN(categoryId)) {
-      return res.status(400).send("Invalid category ID");
-    }
-
-    // Fetch the category and its products
-    const category = await prisma.category.findUnique({
-      where: { id: categoryId },
-      include: { products: true }, // Include products in the category
-    });
-
-    if (!category) {
-      return res.status(404).send("Category not found");
-    }
-
-    // Render the category page and pass the category name and its products
-    res.render("pages/category", { categoryName: category.name, products: category.products });
-  } catch (error) {
-    console.error("Error fetching category:", error);
-    res.status(500).send("Internal Server Error");
-  }
-});
+app.use(productsRouter);
+app.use(cartRouter);
+app.use(categoriesRouter);
 
 app.listen(3000, () => {
   console.log("Example app listening on port 3000!");
 });
-
-prisma.account.create({
-  data: {
-    customer: {
-      create: {
-        name: "",
-        phoneNumber: "",
-      },
-    },
-    email: "",
-    password: "",
-    role: "",
-  },
-});
-
