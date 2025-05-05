@@ -1,11 +1,10 @@
 generator client {
   provider = "prisma-client-js"
   previewFeatures = ["relationJoins"]
-  //output   = "./generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -21,7 +20,7 @@ model account {
 model admin {
   id        Int     @id @default(autoincrement())
   accountId Int     @unique(map: "Admin_accountId_key")
-  account   account @relation(fields: [accountId], references: [id], map: "Admin_accountId_fkey")
+  account   account @relation(fields: [accountId], references: [id], map: "Admin_account_relation")
 }
 
 model cart {
@@ -29,32 +28,32 @@ model cart {
   name        String
   customerId  Int
   status      String
-  customer    customer      @relation(fields: [customerId], references: [id], map: "Cart_customerId_fkey")
+  customer    customer      @relation(fields: [customerId], references: [id], map: "Cart_customer_relation")
   cartproduct cartproduct[]
   order       order?
 
-  @@index([customerId], map: "Cart_customerId_fkey")
+  @@index([customerId], map: "Cart_customer_index")
 }
 
 model cartproduct {
   id        Int     @id @default(autoincrement())
   cartId    Int
   productId Int
-  cart      cart    @relation(fields: [cartId], references: [id], map: "CartProduct_cartId_fkey")
-  product   product @relation(fields: [productId], references: [id], map: "CartProduct_productId_fkey")
+  cart      cart    @relation(fields: [cartId], references: [id], map: "CartProduct_cart_relation")
+  product   product @relation(fields: [productId], references: [id], map: "CartProduct_product_relation")
 
-  @@index([cartId], map: "CartProduct_cartId_fkey")
-  @@index([productId], map: "CartProduct_productId_fkey")
+  @@index([cartId], map: "CartProduct_cart_index")
+  @@index([productId], map: "CartProduct_product_index")
 }
 
 model customer {
-  id          Int     @id @default(autoincrement())
-  accountId   Int     @unique(map: "Customer_accountId_key")
-  name        String
-  profileImage String? // New field for profile image
-  phoneNumber String
-  cart        cart[]
-  account     account @relation(fields: [accountId], references: [id], map: "Customer_accountId_fkey")
+  id           Int     @id @default(autoincrement())
+  accountId    Int     @unique(map: "Customer_accountId_key")
+  name         String
+  profileImage String?
+  phoneNumber  String
+  cart         cart[]
+  account      account @relation(fields: [accountId], references: [id], map: "Customer_account_relation")
 }
 
 model order {
@@ -62,7 +61,7 @@ model order {
   cartId  Int    @unique(map: "Order_cartId_key")
   address String
   payment String
-  cart    cart   @relation(fields: [cartId], references: [id], map: "Order_cartId_fkey")
+  cart    cart   @relation(fields: [cartId], references: [id], map: "Order_cart_relation")
 }
 
 model product {
@@ -71,18 +70,18 @@ model product {
   price       Float
   description String
   quantity    Int
-  image       String       // New field for product image
+  image       String
   cartproduct cartproduct[]
   categoryId  Int?
   category    category?     @relation(fields: [categoryId], references: [id])
 
-  @@index([categoryId])
+  @@index([categoryId], map: "Product_category_index")
 }
 
 model category {
-  id          Int       @id @default(autoincrement())
-  name        String    @unique
+  id          Int        @id @default(autoincrement())
+  name        String     @unique
   description String?
-  image       String   // New field for category image
-  products    product[] // One category can have many products
+  image       String
+  products    product[]
 }

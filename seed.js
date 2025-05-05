@@ -9,7 +9,7 @@ async function seed() {
 
     // Create 3 categories
     const categories = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 6; i++) {
         const category = await prisma.category.create({
             data: {
                 name: faker.commerce.department() + ' ' + i,
