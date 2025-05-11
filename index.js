@@ -1,4 +1,5 @@
 import express from "express";
+import { PrismaClient } from "@prisma/client";
 import { authRouter } from "./src/entities/auth/router.js";
 import productsRouter from "./src/entities/products/products.router.js";
 import cartRouter from "./src/entities/cart/cart.router.js";
@@ -12,17 +13,14 @@ import { fileURLToPath } from "url";
 import AdminJS from "adminjs";
 import AdminJSExpress from "@adminjs/express";
 import { Database, Resource, getModelByName } from "@adminjs/prisma";
-import { PrismaClient } from "@prisma/client";
 import {
-  ensureAdmin,
   ensureAuthenticated,
+  ensureAdmin,
 } from "./src/core/middleware/authMiddleware.js";
-
 export const prisma = new PrismaClient();
 const app = express();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 app.set("views", path.join(__dirname, "views"));
 app.set("trust proxy", 1);
 async function checkPrismaConnection() {
@@ -75,38 +73,14 @@ app.use(cartRouter);
 app.use(categoriesRouter);
 
 // Register the Prisma adapter for AdminJS
-// AdminJS.registerAdapter(AdminJSPrisma);
 AdminJS.registerAdapter({ Database, Resource });
 
-const adminOptions = {
+const admin = new AdminJS({
+  rootPath: "/admin",
   resources: [
     {
-      resource: { model: getModelByName("product"), client: prisma },
-      options: {
-        properties: {
-          image: {
-            isVisible: { list: true, edit: true, show: true },
-            isTitle: true, // Use this field as the title in the list view
-          },
-          categories: {
-            type: "reference",
-            isArray: true, // Indicates a many-to-many relationship
-            isVisible: { list: true, edit: true, show: true },
-          },
-        },
-      },
-    },
-    {
-      resource: { model: getModelByName("category"), client: prisma },
-      options: {},
-    },
-    {
       resource: { model: getModelByName("account"), client: prisma },
-      options: {
-        properties: {
-          password: { isVisible: { list: false, edit: true, show: false } }, // Hide password in list and show views
-        },
-      },
+      options: {},
     },
     {
       resource: { model: getModelByName("admin"), client: prisma },
@@ -117,6 +91,10 @@ const adminOptions = {
       options: {},
     },
     {
+      resource: { model: getModelByName("cartproduct"), client: prisma },
+      options: {},
+    },
+    {
       resource: { model: getModelByName("customer"), client: prisma },
       options: {},
     },
@@ -124,12 +102,15 @@ const adminOptions = {
       resource: { model: getModelByName("order"), client: prisma },
       options: {},
     },
+    {
+      resource: { model: getModelByName("product"), client: prisma },
+      options: {},
+    },
+    {
+      resource: { model: getModelByName("category"), client: prisma },
+      options: {},
+    },
   ],
-};
-
-const admin = new AdminJS({
-  rootPath: "/admin",
-  resources: adminOptions.resources,
 });
 
 const adminRouter = AdminJSExpress.buildRouter(admin);

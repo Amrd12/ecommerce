@@ -1,5 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
   previewFeatures = ["relationJoins"]
 }
 
@@ -36,12 +36,12 @@ model cart {
 }
 
 model cartproduct {
+  id        Int     @id @default(autoincrement())
   cartId    Int
   productId Int
   cart      cart    @relation(fields: [cartId], references: [id], map: "CartProduct_cart_relation")
   product   product @relation(fields: [productId], references: [id], map: "CartProduct_product_relation")
 
-  @@id([cartId, productId])
   @@index([cartId], map: "CartProduct_cart_index")
   @@index([productId], map: "CartProduct_product_index")
 }
@@ -72,14 +72,16 @@ model product {
   quantity    Int
   image       String
   cartproduct cartproduct[]
-  categories  category[]   
+  categoryId  Int?
+  category    category?     @relation(fields: [categoryId], references: [id])
 
-  @@index([id])
+  @@index([categoryId], map: "Product_category_index")
 }
 
 model category {
   id          Int        @id @default(autoincrement())
   name        String     @unique
   description String?
-  products    product[] 
+  image       String
+  products    product[]
 }
