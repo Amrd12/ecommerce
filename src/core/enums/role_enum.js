@@ -10,3 +10,4 @@ export class UserTypeEnum {
     return this.values.includes(role);
   }
 }
+
