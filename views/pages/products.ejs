@@ -6,9 +6,9 @@
   <title>Products</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    color1= '#438cc3';
-    color2= '#a297de';
-    color3= '#8569cf';
+    color1= '#1E3A8A';
+    color2= '#3B82F6';
+    color3= '#93C5FD';
     tailwind.config = {
       theme: {
         extend: {
@@ -29,31 +29,25 @@
 
   <style>
     :root {
-      --color1: #438cc3; /* Primary */
-      --color2: #a297de; /* Secondary */
-      --color3: #8569cf; /* Accent */
+      --color1: #1E3A8A; /* Primary - Dark Blue */
+      --color2: #3B82F6; /* Secondary - Blue */
+      --color3: #93C5FD; /* Accent - Light Blue */
     }
 
     body {
-      background-color: var(--color2); /* Secondary color for the background */
+      background-color: #ffff;; /* Secondary color for the background */
       color: #ffff; /* Primary color for text */
     }
 
-    .bg-navbar {
-      background-color: var(--color1); /* Primary color for navbar */
-    }
-
-    .bg-footer {
-      background-color: var(--color1); /* Primary color for footer */
-    }
+    
 
     .btn-primary {
-      background-color: var(--color1); /* Primary color for buttons */
+      background-color: var(--color2); /* Primary color for buttons */
       color: white;
     }
 
     .btn-primary:hover {
-      background-color: var(--color3); /* Accent color for hover state */
+      background-color: var(--color1); /* Accent color for hover state */
     }
 
     .pagination a {
@@ -77,8 +71,50 @@
   </style>
 </head>
 <body>
-  <!-- Include Navbar -->
-  <%- include('../partials/navbar', { user: user }) %>
+  <nav class="bg-navbar text-white py-0 shadow sticky top-0 z-50">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      
+      <!-- Logo and Products Link with spacing -->
+      <div class="flex items-center gap-6">
+        <a href="/" class="flex items-center gap-2">
+          <img src="/images/logo.png" alt="Nitro Store Logo" class="h-full w-auto max-h-16"> <!-- Adjusted height and width -->
+        </a>
+        <a href="/products" class="text-white hover:text-blue-300 transition font-medium">Products</a>
+      </div>
+
+      <!-- Search -->
+      <div class="flex-grow mx-4 relative flex justify-end">
+        <input type="text" placeholder="Search..." onfocus="this.classList.add('w-full')"
+               onblur="this.classList.remove('w-full')"
+               class="w-32 focus:w-full transition-all duration-500 bg-white text-black px-3 py-1 rounded" />
+      </div>
+
+      <div class="flex items-center gap-4">
+        <button onclick="toggleCart()" class="group flex items-center gap-1">
+          <i class="bi bi-cart text-xl"></i>
+          <span class="hidden group-hover:inline transition">Cart</span>
+        </button>
+        <div class="relative">
+          <% if (user) { %>
+            <!-- Logged-in User -->
+            <img src="<%= user.profileImage || '/images/default-avatar.png' %>" alt="Profile" 
+                 class="w-10 h-10 rounded-full cursor-pointer" onclick="toggleDropdown('userDropdown')">
+            <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg hidden">
+              <a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+              <a href="/logout" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Log Out</a>
+            </div>
+          <% } else { %>
+            <!-- Not Logged In -->
+            <i class="bi bi-person text-xl cursor-pointer" onclick="toggleDropdown('loginDropdown')"></i>
+            <div id="loginDropdown" class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg hidden">
+              <a href="/login" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Log In</a>
+              <a href="/register" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Sign Up</a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </nav>
   <div class="container py-5">
     <div class="row">
       <!-- Sidebar for Filters -->
