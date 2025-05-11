@@ -7,9 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    color1= '#438cc3';
-    color2= '#a297de';
-    color3= '#8569cf';
+    color1= '#1E3A8A';
+    color2= '#3B82F6';
+    color3= '##93C5FD';
     tailwind.config = {
       theme: {
         extend: {
@@ -29,18 +29,19 @@
   
   <style>
     :root {
-      --color1: #438cc3; /* Primary */
-      --color2: #a297de; /* Secondary */
-      --color3: #8569cf; /* Accent */
+      --color1: #1E3A8A; /* Primary */
+      --color2: #3B82F6; /* Secondary */
+      --color3: #93C5FD; /* Accent */
     }
-
+   
     body {
       background-color: var(--color2); /* Secondary color for the background */
       color: #ffff; /* Primary color for text */
     }
 
     .bg-navbar {
-      background-color: var(--color1); /* Primary color for navbar */
+      background-color: var(--color1);
+       /* Primary color for navbar */
     }
 
     .bg-footer {
@@ -81,7 +82,7 @@
     background-color: var(--color2) !important;
   }
   .hover\:bg-blue-700:hover {
-    background-color: var(--color3) !important;
+    background-color: var(--color1) !important;
     color: #fff !important;
   }
 
@@ -132,32 +133,29 @@
 </style>
   <style>
     #heroSlider {
-      height: 400px;
+      width: 100vw; /* Full width of the viewport */
+      height: 500px; /* Increased height */
       position: relative;
-      border-radius: 1rem;    }
+      border-radius: 0; /* Remove border-radius for full width */
+    }
 
     .slides {
       display: flex;
       transition: transform 0.5s ease-in-out;
-      
     }
 
     .slide {
       min-width: 100%;
       height: 100%;
-      background-size: cover;
+      background-size: contain; /* Ensure the entire image is visible */
       background-position: center;
       background-repeat: no-repeat;
     }
 
-    .bullet {
-      cursor: pointer;
-      transition: opacity 0.3s ease;
-    }
-
-    .bullet.active {
-      opacity: 1;
-      background-color:var(--color2) ; /* Highlight active bullet */
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain; /* Ensure the entire image is visible without cropping */
     }
   </style>
   <style>
@@ -168,12 +166,14 @@
 </head>
 <body class="bg-gray-50 text-gray-900">
 <!-- Navbar -->
-<nav class="bg-navbar text-white py-4 shadow sticky top-0 z-50">
+<nav class="bg-navbar text-white py-0 shadow sticky top-0 z-50">
   <div class="container mx-auto px-4 flex justify-between items-center">
     
     <!-- Logo and Products Link with spacing -->
     <div class="flex items-center gap-6">
-      <a href="/" class="text-xl font-bold">YourStore</a>
+      <a href="/" class="flex items-center gap-2">
+        <img src="/images/logo.png" alt="Nitro Store Logo" class="h-full w-auto max-h-16"> <!-- Adjusted height and width -->
+      </a>
       <a href="/products" class="text-white hover:text-blue-300 transition font-medium">Products</a>
     </div>
 
@@ -212,18 +212,18 @@
 </nav>
 
 <!-- Hero Section -->
-<section class="relative bg-cover bg-center py-16">
-  <div id="heroSlider" class="relative overflow-hidden container mx-auto px-4">
+<section class="relative bg-cover bg-center p-0">
+  <div id="heroSlider" class="relative overflow-hidden mx-auto">
     <!-- Slides -->
     <div class="slides">
       <a href="/sales/event1" class="slide">
-        <img src="/images/sales-event1.jpg" alt="Sales Event 1" class="w-full h-full object-cover rounded-xl">
+        <img src="/images/sales-event5.png" alt="Sales Event 1" class="w-full h-full object-cover">
       </a>
       <a href="/sales/event2" class="slide">
-        <img src="/images/sales-event2.jpg" alt="Sales Event 2" class="w-full h-full object-cover">
+        <img src="/images/sales-event4.jpg" alt="Sales Event 2" class="w-full h-full object-cover">
       </a>
       <a href="/sales/event3" class="slide">
-        <img src="/images/sales-event3.jpg" alt="Sales Event 1" class="w-full h-full object-cover rounded-xl">
+        <img src="/images/sales-event3.jpeg" alt="Sales Event 3" class="w-full h-full object-cover">
       </a>
     </div>
 
