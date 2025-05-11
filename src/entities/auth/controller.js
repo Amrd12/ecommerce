@@ -27,7 +27,9 @@ export const register = async (req, res) => {
   }
 
   const { email, password, name, phoneNumber } = req.body;
-  const profileImage = req.file ? `/uploads/${req.file.filename}` : "/images/default-avatar.png"; // Use default if no image is uploaded
+  const profileImage = req.file
+    ? `/uploads/${req.file.filename}`
+    : "/images/default-avatar.png"; // Use default if no image is uploaded
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -79,14 +81,16 @@ export const login = async (req, res) => {
   });
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.render('pages/auth/login', { error: 'Invalid email or password' });
+    return res.render("pages/auth/login", {
+      error: "Invalid email or password",
+    });
   }
 
   // Save user session
   req.session.user = user.customer;
 
   // Redirect to the intended page or default to profile
-  const redirectTo = req.session.redirectTo || '/';
+  const redirectTo = req.session.redirectTo || "/";
   delete req.session.redirectTo; // Clear the redirectTo session variable
   res.redirect(redirectTo);
 };
@@ -96,9 +100,56 @@ export const profile = async (req, res) => {
     res.redirect("login");
     return;
   }
-  res.render("pages/auth/user", {
-    user: req.session.user,
-  });
+
+  try {
+    const userId = req.session.user.id;
+    const page = parseInt(req.query.page) || 1; // Current page (default: 1)
+    const pageSize = 5; // Number of orders per page
+    const skip = (page - 1) * pageSize;
+
+    // Fetch total order count for pagination
+    const totalOrders = await prisma.order.count({
+      where: {
+        cart: {
+          customerId: userId,
+        },
+      },
+    });
+
+    // Fetch paginated orders
+    const orders = await prisma.order.findMany({
+      where: {
+        cart: {
+          customerId: userId,
+        },
+      },
+      include: {
+        cart: {
+          include: {
+            cartproduct: {
+              include: {
+                product: true, // Include product details for each cart product
+              },
+            },
+          },
+        },
+      },
+      skip,
+      take: pageSize,
+    });
+
+    const totalPages = Math.ceil(totalOrders / pageSize);
+
+    res.render("pages/auth/user", {
+      user: req.session.user,
+      orders, // Pass orders to the view
+      currentPage: page,
+      totalPages,
+    });
+  } catch (error) {
+    console.error("Error fetching user orders:", error);
+    res.status(500).send("Internal server error");
+  }
 };
 
 export const logout = (req, res) => {
