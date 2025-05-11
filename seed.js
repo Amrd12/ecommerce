@@ -1,52 +1,73 @@
-// seed.js
-import { PrismaClient } from "@prisma/client";
-import { faker } from "@faker-js/faker";
+// Prisma seed script to populate the database using a CSV file
+import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
+import path from 'path';
+import csvParser from 'csv-parser';
 
 const prisma = new PrismaClient();
 
-async function seed() {
-  console.log("Seeding database...");
+async function main() {
+  const filePath = "./Book1.csv";
+  const products = [];
 
-  // Create 3 categories
-  const categories = [];
-  for (let i = 0; i < 6; i++) {
-    const category = await prisma.category.create({
-      data: {
-        name: faker.commerce.department() + " " + i,
-        description: faker.lorem.sentence(),
+  await new Promise((resolve, reject) => {
+    fs.createReadStream(filePath)
+      .pipe(csvParser())
+      .on('data', (row) => {
+        if (row['title'] && row['final_price'] && row['categories']) {
+          let categories = [];
+          try {
+            categories = JSON.parse(row['categories']);
+          } catch (error) {
+            console.error(`Error parsing categories for row: ${row['title']}`, error);
+          }
 
-        image: faker.image.urlLoremFlickr({ category: "Categories" }),
-      },
+          products.push({
+            name: row['title'],
+            price: parseFloat(row['final_price']) || 200,
+            description: row['description'] || '',
+            quantity: parseInt(row['number_of_sellers']) || 0,
+            image: row['image_url'] || '',
+            categoryName : categories[0], // Store the parsed categories array
+          });
+        }
+      })
+      .on('end', resolve)
+      .on('error', reject);
+  });
+
+  for (const product of products) {
+    if (!product.categoryName) continue;
+
+    const category = await prisma.category.upsert({
+      where: { name: product.categoryName },
+      update: {},
+      create: {
+        name: product.categoryName,
+        description: ''
+      }
     });
-    categories.push(category);
+
+    await prisma.product.create({
+      data: {
+        name: product.name,
+        price: product.price,
+        description: product.description,
+        quantity: product.quantity,
+        image: product.image,
+        categoryId: category.id
+      }
+    });
   }
 
-  // Create 30 products (10 per category)
-  for (const category of categories) {
-    for (let i = 0; i < 10; i++) {
-      await prisma.product.create({
-        data: {
-          name: faker.commerce.productName(),
-          price: parseFloat(faker.commerce.price()),
-          description: faker.commerce.productDescription(),
-          quantity: faker.number.int({ min: 1, max: 100 }),
-          image: faker.image.url({
-            width: 450,
-            height: 450,
-            category: "product",
-          }),
-          categoryId: category.id,
-        },
-      });
-    }
-  }
-
-  console.log("Seeding completed.");
-  await prisma.$disconnect();
+  console.log('Seeding completed');
 }
 
-seed().catch((e) => {
-  console.error(e);
-  prisma.$disconnect();
-  process.exit(1);
-});
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

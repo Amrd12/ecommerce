@@ -82,6 +82,6 @@ model category {
   id          Int        @id @default(autoincrement())
   name        String     @unique
   description String?
-  image       String
+//  image       String?
   products    product[]
 }
