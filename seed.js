@@ -7,7 +7,7 @@ import csvParser from 'csv-parser';
 const prisma = new PrismaClient();
 
 async function main() {
-  const filePath = "./Book1.csv";
+  const filePath = ".amazon-products";
   const products = [];
 
   await new Promise((resolve, reject) => {

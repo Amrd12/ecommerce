@@ -4,9 +4,32 @@
   <meta charset="UTF-8">
   <title>Checkout</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    color1= '#1E3A8A';
+    color2= '#3B82F6';
+    color3= '#93C5FD';
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navbar: color2,
+            footer: color2,
+            drawerHeader: color2
+          },
+          transitionProperty: {
+            'width': 'width'
+          }
+        }
+      }
+    }
+  </script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
 </head>
 <body>
+<%- include('../partials/navbar') %>
 <div class="container my-5">
   <div class="row">
     <!-- Profile & Credentials -->
@@ -19,7 +42,7 @@
         </div>
         <div class="mb-3">
           <label class="form-label">Email</label>
-          <input type="email" class="form-control" value="" placeholder="Enter email" readonly>
+          <input type="email" class="form-control" value="<%= user.email %>" placeholder="Enter email" readonly>
         </div>
         <div class="mb-3">
           <label class="form-label">Address</label>
@@ -63,6 +86,8 @@
   totalEl.innerHTML = `Total <span>$${total.toFixed(2)}</span>`;
   cartList.appendChild(totalEl);
 </script>
+<%- include('../partials/footer') %>
+<%- include('../partials/scripts') %>
 
 </body>
 </html>
